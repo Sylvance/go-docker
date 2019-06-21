@@ -18,6 +18,7 @@ after_script:
   - docker images
 
 before_deploy:
+  - docker login --username=_ --password=${HEROKU_AUTH_TOKEN} registry.heroku.com
   - git_sha="$(git rev-parse --short HEAD)"
   - docker tag "$IMAGE_NAME" "${IMAGE_NAME}:latest"
   - docker tag "$IMAGE_NAME" "${IMAGE_NAME}:${git_sha}"
