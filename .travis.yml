@@ -5,7 +5,7 @@ services:
   - docker
 env:
   global:
-    - IMAGE_NAME=sylvance/kuns-orbit
+    - IMAGE_NAME=sylvance/go-docker
     - secret: "my-secret-squared"
 
 before_script:
