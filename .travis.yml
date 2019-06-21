@@ -9,7 +9,6 @@ env:
     - secret: "my-secret-squared"
 
 before_script:
-  - docker login --username=_ --password=${HEROKU_AUTH_TOKEN} registry.heroku.com
   - docker pull "${IMAGE_NAME}:latest" || true
 script:
   - docker build --pull --cache-from "${IMAGE_NAME}:latest" --tag "$IMAGE_NAME" .
@@ -20,15 +19,15 @@ after_script:
 before_deploy:
   - docker login --username=_ --password=${HEROKU_AUTH_TOKEN} registry.heroku.com
   - git_sha="$(git rev-parse --short HEAD)"
-  - docker tag "$IMAGE_NAME" "${IMAGE_NAME}:latest"
-  - docker tag "$IMAGE_NAME" "${IMAGE_NAME}:${git_sha}"
+  - docker tag "$IMAGE_NAME" "registry.heroku.com/${IMAGE_NAME}:latest"
+  - docker tag "$IMAGE_NAME" "registry.heroku.com/${IMAGE_NAME}:${git_sha}"
 deploy:
   - provider: script
-    script: docker push "${IMAGE_NAME}:latest"
+    script: docker login --username=_ --password=${HEROKU_AUTH_TOKEN} registry.heroku.com && docker push "registry.heroku.com/${IMAGE_NAME}:latest"
     on:
       branch: master
 
   - provider: script
-    script: docker push "${IMAGE_NAME}:${git_sha}"
+    script: docker push "registry.heroku.com/${IMAGE_NAME}:${git_sha}" && heroku container:release web
     on:
       branch: develop
