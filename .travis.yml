@@ -20,19 +20,10 @@ script:
 after_script:
   - docker images
 
-before_deploy:
+after_script:
   - docker login --username=_ --password=${HEROKU_AUTH_TOKEN} registry.heroku.com
   - git_sha="$(git rev-parse --short HEAD)"
-  - docker tag "$IMAGE_NAME" "registry.heroku.com/${IMAGE_NAME}:latest"
-  - docker tag "$IMAGE_NAME" "registry.heroku.com/${IMAGE_NAME}:${git_sha}"
-
-deploy:
-  - provider: script
-    script: docker push "registry.heroku.com/${IMAGE_NAME}:latest" && heroku container:release web -a "${IMAGE_NAME}"
-    on:
-      branch: master
-
-  - provider: script
-    script: docker push "registry.heroku.com/${IMAGE_NAME}:${git_sha}" && heroku container:release web -a "${IMAGE_NAME}"
-    on:
-      branch: develop
+  - if [ "$TRAVIS_BRANCH" != "master" ] && docker tag "$IMAGE_NAME" "registry.heroku.com/${IMAGE_NAME}:latest"
+  - if [ "$TRAVIS_BRANCH" != ${git_sha} ] &&  docker tag "$IMAGE_NAME" "registry.heroku.com/${IMAGE_NAME}:${git_sha}"
+  - if [ "$TRAVIS_BRANCH" != "master" ] && docker push "registry.heroku.com/${IMAGE_NAME}:latest" && heroku container:release web -a "${IMAGE_NAME}"
+  - if [ "$TRAVIS_BRANCH" != ${git_sha} ] && docker push "registry.heroku.com/${IMAGE_NAME}:${git_sha}" && heroku container:release web -a "${IMAGE_NAME}"
