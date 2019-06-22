@@ -12,5 +12,8 @@ Go webserver that is built as a docker image, CI done by Travis and continuosly 
 - Run it; `docker-compose up`.
 - Go to localhost:8080 to see webpage.
 
+## One-off run to create app
+- Run, `heroku apps:create go-docker`.
+
 ## Author
 Sylvance Kerandi.
