@@ -17,3 +17,4 @@ script:
 
 after_script:
   - heroku container:release web -a ${APP_NAME}
+  - echo -e "Visit this url to view site https://$APP_NAME.herokuapp.com/"
