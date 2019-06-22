@@ -13,7 +13,7 @@ before_script:
   - heroku container:login
 
 script:
-  - heroku container:push web -a $APP_NAME
+  - heroku container:push web -a ${APP_NAME}
 
 after_script:
-  - heroku container:release web -a $APP_NAME
+  - heroku container:release web -a ${APP_NAME}
