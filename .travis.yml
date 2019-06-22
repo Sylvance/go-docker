@@ -4,25 +4,14 @@ python: "3.6"
 services:
   - docker
 
-env:
-  global:
-    - IMAGE_NAME=sylvance/go-docker
-    - secret: "my-secret-squared"
-
 before_script:
-  - docker pull "registry.heroku.com/${IMAGE_NAME}:latest" || true
-  - echo -e "machine api.heroku.com\n  login $HEROKU_USERNAME\n  password $HEROKU_PASSWORD\nmachine git.heroku.com\n  login $HEROKU_USERNAME\n  password $HEROKU_PASSWORD" >> ~/.netrc
+  - curl https://cli-assets.heroku.com/install.sh | sh
+  - echo -e "machine api.heroku.com\n  login $HEROKU_USERNAME\n  password $HEROKU_AUTH_TOKEN\nmachine git.heroku.com\n  login $HEROKU_USERNAME\n  password $HEROKU_AUTH_TOKEN" >> ~/.netrc
+  - heroku container:login
 
 script:
-  - curl https://cli-assets.heroku.com/install-ubuntu.sh | sh
-  - docker build --pull --cache-from "registry.heroku.com/${IMAGE_NAME}:latest" --tag "$IMAGE_NAME" .
+  - heroku create
+  - heroku container:push web
 
 after_script:
-  - docker images
-
-after_script:
-  - docker login --username=_ --password=${HEROKU_AUTH_TOKEN} registry.heroku.com
-  - git_sha="$(git rev-parse --short HEAD)"
-  - docker tag "$IMAGE_NAME" "registry.heroku.com/${IMAGE_NAME}:latest"
-  - docker tag "$IMAGE_NAME" "registry.heroku.com/${IMAGE_NAME}:${git_sha}"
-  - docker push "registry.heroku.com/${IMAGE_NAME}:latest" && heroku container:release web -a "${IMAGE_NAME}"
+  - heroku container:release web
