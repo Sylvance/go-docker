@@ -4,14 +4,16 @@ python: "3.6"
 services:
   - docker
 
+env:
+  - APP_NAME=go-docker
+
 before_script:
   - curl https://cli-assets.heroku.com/install.sh | sh
   - echo -e "machine api.heroku.com\n  login $HEROKU_USERNAME\n  password $HEROKU_AUTH_TOKEN\nmachine git.heroku.com\n  login $HEROKU_USERNAME\n  password $HEROKU_AUTH_TOKEN" >> ~/.netrc
   - heroku container:login
 
 script:
-  - heroku create
-  - heroku container:push web
+  - heroku container:push web -a $APP_NAME
 
 after_script:
-  - heroku container:release web
+  - heroku container:release web -a $APP_NAME
