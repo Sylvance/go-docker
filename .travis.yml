@@ -23,7 +23,6 @@ after_script:
 after_script:
   - docker login --username=_ --password=${HEROKU_AUTH_TOKEN} registry.heroku.com
   - git_sha="$(git rev-parse --short HEAD)"
-  - if [ "$TRAVIS_BRANCH" != "master" ] && docker tag "$IMAGE_NAME" "registry.heroku.com/${IMAGE_NAME}:latest" fi
-  - if [ "$TRAVIS_BRANCH" != ${git_sha} ] &&  docker tag "$IMAGE_NAME" "registry.heroku.com/${IMAGE_NAME}:${git_sha}" fi
-  - if [ "$TRAVIS_BRANCH" != "master" ] && docker push "registry.heroku.com/${IMAGE_NAME}:latest" && heroku container:release web -a "${IMAGE_NAME}" fi
-  - if [ "$TRAVIS_BRANCH" != ${git_sha} ] && docker push "registry.heroku.com/${IMAGE_NAME}:${git_sha}" && heroku container:release web -a "${IMAGE_NAME}" fi
+  - docker tag "$IMAGE_NAME" "registry.heroku.com/${IMAGE_NAME}:latest"
+  - docker tag "$IMAGE_NAME" "registry.heroku.com/${IMAGE_NAME}:${git_sha}"
+  - docker push "registry.heroku.com/${IMAGE_NAME}:latest" && heroku container:release web -a "${IMAGE_NAME}"
