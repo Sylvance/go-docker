@@ -15,5 +15,8 @@ Go webserver that is built as a docker image, CI done by Travis and continuosly 
 ## One-off run to create app
 - Run, `heroku apps:create go-docker`.
 
+## Todo
+- Improve by following this tutorial https://medium.com/@adigunhammedolalekan/build-and-deploy-a-secure-rest-api-with-go-postgresql-jwt-and-gorm-6fadf3da505b
+
 ## Author
 Sylvance Kerandi.
