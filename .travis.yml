@@ -4,12 +4,6 @@ python: "3.6"
 services:
   - docker
 
-env:
-  - APP_NAME=go-docker
-  - STAGING_APP_NAME=go-docker-staging
-  - PROD_URL=https://${APP_NAME}.herokuapp.com
-  - STAGING_URL=https://${STAGING_APP_NAME}.herokuapp.com
-
 before_script:
   - curl https://cli-assets.heroku.com/install.sh | sh
   - echo -e "machine api.heroku.com\n  login $HEROKU_USERNAME\n  password $HEROKU_AUTH_TOKEN\nmachine git.heroku.com\n  login $HEROKU_USERNAME\n  password $HEROKU_AUTH_TOKEN" >> ~/.netrc
@@ -18,17 +12,8 @@ before_script:
 script:
   - heroku container:push web -a ${APP_NAME}
 
-after_script:
-  - heroku container:release web -a ${APP_NAME}
-  - echo -e "Visit this url to view site" ${PROD_URL}
-
 deploy:
   - provider: script
-    script: heroku container:release web -a ${APP_NAME} && echo -e "Visit this url to view site "${PROD_URL}
+    script: heroku container:release web -a ${APP_NAME} && echo -e "Visit this url to view site ${PROD_URL}"
     on:
       branch: master
-
-  - provider: script
-    script: heroku container:release web -a ${STAGING_APP_NAME} && echo -e "Visit this url to view site "${STAGING_URL}
-    on:
-      branch: develop
